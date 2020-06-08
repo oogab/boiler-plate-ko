@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 mongoose.connect('mongodb+srv://oogab:1234@boilerplate-4u5d2.mongodb.net/<dbname>?retryWrites=true&w=majority', {
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(() => console.log('MongoDB Connected...'))
-  .catch(err => console.log(err))
+  .catch(err => console.log(err));
 
 
 app.get('/', (req, res) => res.send('Hello World!'))
