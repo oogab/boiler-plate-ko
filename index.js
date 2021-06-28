@@ -2,8 +2,12 @@ const express = require('express')
 const app = express()
 const port = 5000
 
+const config = require('./config/key')
+
+const User = require('./models/user')
+
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://wook:rejavaji@cluster0.t3axg.mongodb.net/test?authSource=admin&replicaSet=atlas-ofxa43-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true', {
+mongoose.connect(config.mongoURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
@@ -11,9 +15,30 @@ mongoose.connect('mongodb+srv://wook:rejavaji@cluster0.t3axg.mongodb.net/test?au
     }).then(() => console.log('MongoDB Connected...'))
     .catch(err => console.error(err))
 
+// application/json
+app.use(express.json())
+// application/x-www-form-urlencoded
+app.use(express.urlencoded({
+    extended: false
+}))
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
+})
+
+app.post('/register', (req, res) => {
+    // 회원 가입할 때 필요한 정보들을 client에서 가져오면
+    // 그것들을 데이터 베이스에 넣는다.
+    const user = new User(req)
+    user.save((err, userInfo) => {
+        if (err) return res.json({
+            success: false,
+            err
+        })
+        return res.status(200).json({
+            success: true,
+        })
+    })
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
